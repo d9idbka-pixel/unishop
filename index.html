@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<!-- UniShop. Структура: index.html + css/style.css + js/app.js + js/tailwind-config.js + images/ -->
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniShop — техника, запчасти, сервис и СЗР для аграриев</title>
+<meta name="description" content="UniShop: техника из Китая, запчасти, сервис, масла и СЗР в одном месте.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-graphite bg-white min-h-screen flex flex-col">
+
+<!-- ШАПКА: логотип, меню (строится в app.js), телефон, бургер для смартфонов.
+     Прозрачная поверх hero, после прокрутки получает фон -->
+<header id="hdr" class="fixed top-0 inset-x-0 z-50 text-white transition-colors duration-300">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-20 gap-6">
+    <a href="#home" data-go="home" class="flex items-center gap-3" aria-label="UniShop — на главную"><svg width="42" height="42" viewBox="0 0 40 40" aria-hidden="true"><polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="#F2A91E"/><path d="M20 33V15" stroke="#23272B" stroke-width="2.2" stroke-linecap="round"/><g fill="#23272B"><ellipse cx="16" cy="14" rx="2.6" ry="4.4" transform="rotate(-25 16 14)"/><ellipse cx="24" cy="14" rx="2.6" ry="4.4" transform="rotate(25 24 14)"/><ellipse cx="20" cy="9" rx="2.4" ry="4.2"/><ellipse cx="15.6" cy="22" rx="2.6" ry="4.2" transform="rotate(-25 15.6 22)"/><ellipse cx="24.4" cy="22" rx="2.6" ry="4.2" transform="rotate(25 24.4 22)"/></g></svg><span class="font-head text-3xl tracking-wide">Uni<b class="text-grain font-semibold">Shop</b></span></a>
+    <nav class="hidden lg:flex gap-7 text-sm" aria-label="Основное меню" id="nav-desktop"></nav>
+    <a href="tel:+3750000123" class="hidden xl:block text-sm font-semibold hover:text-grain">+375 (29) 000-01-23</a>
+    <button id="burger" class="lg:hidden p-2" aria-label="Открыть меню" aria-expanded="false">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <nav id="nav-mobile" class="hidden lg:hidden flex-col px-4 pb-4 bg-graphite/95" aria-label="Мобильное меню"></nav>
+</header>
+
+<!-- HERO-КАРУСЕЛЬ: показывается только на главной. Слайды добавляет app.js (paintSlides) -->
+<section id="hero" class="hero min-h-[88vh] flex items-center" aria-roledescription="carousel" aria-label="Фотогалерея UniShop">
+  <div id="slides" aria-hidden="true"></div>
+  <div class="max-w-5xl mx-auto px-4 pt-40 pb-28 w-full text-center">
+    <p class="text-grain font-semibold">Всё для аграрного хозяйства</p>
+    <p class="font-head text-5xl md:text-7xl leading-[1.08] mt-3 drop-shadow-lg">UniShop. Каждая деталь работает на урожай.</p>
+    <p class="mt-5 text-lg md:text-xl max-w-2xl mx-auto text-white/90">Техника из Китая, запчасти, сервис, масла и СЗР в одном месте</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <button data-go="catalog" class="btn-glow bg-grain text-graphite font-bold px-9 py-4 text-lg rounded hover:brightness-110">В каталог</button>
+      <button data-open="modal" class="border-2 border-white px-9 py-4 text-lg rounded font-bold backdrop-blur hover:bg-white hover:text-pine">Оставить заявку</button>
+    </div>
+  </div>
+  <button id="prev" aria-label="Предыдущее фото" class="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black/30 backdrop-blur text-3xl leading-none hover:bg-grain hover:text-graphite">‹</button>
+  <button id="next" aria-label="Следующее фото" class="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black/30 backdrop-blur text-3xl leading-none hover:bg-grain hover:text-graphite">›</button>
+  <div id="dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2"></div>
+</section>
+<!-- БАННЕР внутренних страниц: заголовок раздела подставляет app.js, фон — paintBanner() -->
+<section id="banner" class="hero bn hidden" aria-hidden="true"><div class="max-w-7xl mx-auto px-4 pt-36 pb-14 text-center"><p id="banner-t" class="font-head text-4xl md:text-6xl"></p><div class="w-16 h-1 bg-grain mx-auto mt-4"></div></div></section>
+<!-- ОСНОВНОЕ СОДЕРЖИМОЕ: шесть секций .page, активна одна (класс .active) -->
+<main class="flex-1">
+<!-- ГЛАВНАЯ -->
+<section id="home" class="page active">
+  <h1 class="sr-only">UniShop — интернет-витрина для аграриев</h1>
+
+  <div class="max-w-7xl mx-auto px-4 py-16">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14 text-center">
+      <div class="p-5 bg-grain text-graphite rounded"><b class="font-head text-5xl" data-n="14">0</b><p class="text-sm mt-1">лет лидер продаж Weichai Lovol</p></div>
+      <div class="p-5 bg-grain text-graphite rounded"><b class="font-head text-5xl" data-n="9">0</b><p class="text-sm mt-1">заводов-партнёров</p></div>
+      <div class="p-5 bg-grain text-graphite rounded"><b class="font-head text-5xl" data-n="530">0</b><p class="text-sm mt-1">л.с. у флагмана Zoomlion</p></div>
+      <div class="p-5 bg-grain text-graphite rounded"><b class="font-head text-5xl" data-n="4">0</b><p class="text-sm mt-1">шага от заявки до запуска</p></div>
+    </div>
+    <h2 class="font-head text-4xl text-center mb-10">Категории каталога</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="cats"></div>
+  </div>
+
+  <div class="bg-graphite text-grain overflow-hidden py-4 font-head text-xl" aria-hidden="true"><div class="mq" id="mq"></div></div>
+  <div class="bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 py-16">
+      <h2 class="font-head text-4xl text-center mb-10">Почему UniShop</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 border-t-4 border-grain"><div class="text-3xl">🛡️</div><h3 class="font-bold text-xl mt-3">Надёжность</h3><p class="mt-2 text-gray-600">Работаем напрямую с заводами КНР. Каждая машина проходит предпродажную проверку.</p></div>
+        <div class="bg-white p-6 border-t-4 border-grain"><div class="text-3xl">🔧</div><h3 class="font-bold text-xl mt-3">Сервис под ключ</h3><p class="mt-2 text-gray-600">Доставка, запуск, обучение механизаторов, ТО и запчасти на складе.</p></div>
+        <div class="bg-white p-6 border-t-4 border-grain"><div class="text-3xl">💰</div><h3 class="font-bold text-xl mt-3">Выгодная цена</h3><p class="mt-2 text-gray-600">Без посредников, с лизингом и рассрочкой для хозяйств любого размера.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
+    <div>
+      <h2 class="font-head text-3xl text-pine">Сервис рядом с вашим полем</h2>
+      <p class="mt-4 text-gray-600">Диагностика, ремонт и замена масел и фильтров. Мастер приедет в хозяйство, а гарантия покрывает работы и запчасти.</p>
+      <button data-go="service" class="mt-6 text-pine font-bold underline underline-offset-4">Подробнее о сервисе</button>
+    </div>
+    <form class="lead bg-pine text-white p-6 rounded space-y-3" novalidate>
+      <h3 class="font-head text-2xl">Быстрая заявка</h3>
+      <input required name="name" placeholder="Имя" aria-label="Имя" class="w-full p-3 rounded text-graphite">
+      <input required name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" class="w-full p-3 rounded text-graphite">
+      <button class="w-full bg-grain text-graphite font-bold py-3 rounded">Перезвоните мне</button>
+      <p class="msg text-grain text-sm" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<!-- КАТАЛОГ: 1) выбор категории (#cat-pick), 2) фильтры и сетка товаров (#cat-view).
+     Товары и фильтры задаются в js/app.js --><!-- КАТАЛОГ -->
+<section id="catalog" class="page">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="font-head text-4xl mb-8">Каталог</h1>
+    <div id="cat-pick">
+      <p class="text-center text-gray-500 mb-8">Выберите, что вам нужно</p>
+      <div id="cat-tiles" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+    <div id="cat-view" class="hidden">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-8">
+        <button id="back" class="text-sm font-semibold text-pine hover:text-grain">← Все категории</button>
+        <h2 id="cat-title" class="font-head text-3xl"></h2>
+      </div>
+      <div class="grid lg:grid-cols-4 gap-8">
+        <aside id="filters" class="space-y-6" aria-label="Фильтры"></aside>
+        <div class="lg:col-span-3">
+          <p id="count" class="mb-4 text-gray-600" role="status"></p>
+          <div id="grid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+          <div id="more" class="flex flex-wrap justify-center gap-3 mt-8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- СЕРВИС -->
+<section id="service" class="page">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="font-head text-4xl text-pine mb-8">Сервис и замена</h1>
+    <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-14">
+      <li class="p-5 bg-gray-100 border-l-4 border-grain"><b>Техническое обслуживание</b><br><span class="text-gray-600">Плановое ТО по регламенту завода.</span></li>
+      <li class="p-5 bg-gray-100 border-l-4 border-grain"><b>Диагностика</b><br><span class="text-gray-600">Компьютерная и механическая.</span></li>
+      <li class="p-5 bg-gray-100 border-l-4 border-grain"><b>Ремонт</b><br><span class="text-gray-600">Двигатель, гидравлика, трансмиссия.</span></li>
+      <li class="p-5 bg-gray-100 border-l-4 border-grain"><b>Замена масел и фильтров</b><br><span class="text-gray-600">Оригинальные и аналоговые расходники.</span></li>
+      <li class="p-5 bg-gray-100 border-l-4 border-grain"><b>Выезд мастера</b><br><span class="text-gray-600">Прямо в поле или на ток.</span></li>
+      <li class="p-5 bg-gray-100 border-l-4 border-grain"><b>Гарантия</b><br><span class="text-gray-600">На технику, работы и запчасти.</span></li>
+    </ul>
+    <h2 class="font-head text-3xl text-pine mb-6">Как проходит заказ</h2>
+    <ol class="grid md:grid-cols-4 gap-4 mb-14">
+      <li class="bg-pine text-white p-5 rounded"><span class="font-head text-4xl text-grain">1</span><p class="mt-2">Заявка и подбор техники под ваши задачи</p></li>
+      <li class="bg-pine text-white p-5 rounded"><span class="font-head text-4xl text-grain">2</span><p class="mt-2">Договор, расчёт и согласование оплаты</p></li>
+      <li class="bg-pine text-white p-5 rounded"><span class="font-head text-4xl text-grain">3</span><p class="mt-2">Поставка с завода и доставка в хозяйство</p></li>
+      <li class="bg-pine text-white p-5 rounded"><span class="font-head text-4xl text-grain">4</span><p class="mt-2">Запуск, обучение и сервисное сопровождение</p></li>
+    </ol>
+    <form class="lead max-w-xl bg-gray-100 p-6 rounded space-y-3" novalidate>
+      <h2 class="font-head text-2xl text-pine">Запись на обслуживание</h2>
+      <input required name="name" placeholder="Имя" aria-label="Имя" class="w-full p-3 rounded border">
+      <input required name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" class="w-full p-3 rounded border">
+      <input required name="tech" placeholder="Техника (марка, модель)" aria-label="Техника" class="w-full p-3 rounded border">
+      <textarea name="desc" rows="4" placeholder="Описание проблемы" aria-label="Описание проблемы" class="w-full p-3 rounded border"></textarea>
+      <button class="bg-pine text-white font-bold px-6 py-3 rounded">Записаться</button>
+      <p class="msg text-pine text-sm" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<!-- О КОМПАНИИ -->
+<section id="about" class="page">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="font-head text-4xl text-pine mb-6">О компании</h1>
+    <p class="max-w-3xl text-lg text-gray-700">Наша миссия — поставлять надёжную технику напрямую из КНР, без лишних звеньев и с полной сервисной поддержкой. Склады расположены в Китае и в России, поэтому запчасти и расходники доступны быстро.</p>
+    <h2 class="font-head text-3xl text-pine mt-12 mb-6">Партнёры</h2>
+    <div id="partners" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+</section>
+
+<!-- ДОСТАВКА -->
+<section id="delivery" class="page">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="font-head text-4xl text-pine mb-8">Доставка и оплата</h1>
+    <div class="grid md:grid-cols-3 gap-6">
+      <article class="p-6 bg-gray-100 border-t-4 border-grain"><h2 class="font-bold text-xl">🚛 Доставка</h2><p class="mt-2 text-gray-600">Спецтранспортом напрямую в хозяйство. Сроки фиксируем в договоре.</p></article>
+      <article class="p-6 bg-gray-100 border-t-4 border-grain"><h2 class="font-bold text-xl">💳 Оплата</h2><p class="mt-2 text-gray-600">Безналичный расчёт, поэтапная оплата, оплата с НДС и без.</p></article>
+      <article class="p-6 bg-gray-100 border-t-4 border-grain"><h2 class="font-bold text-xl">📈 Лизинг и рассрочка</h2><p class="mt-2 text-gray-600">Программы для агрохолдингов и фермерских хозяйств. Условия считаем индивидуально.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- КОНТАКТЫ -->
+<section id="contacts" class="page">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="font-head text-4xl text-pine mb-8">Контакты</h1>
+    <div class="grid lg:grid-cols-2 gap-8">
+     <div id="office" class="office bg-graphite text-white p-8 rounded min-h-[320px] flex flex-col justify-between">
+        <div>
+          <h2 class="font-head text-2xl text-grain">Офис UniShop</h2>
+          <address class="not-italic mt-4 space-y-2">
+            <p>г. Москва, ул. Полевая, 1 (адрес-заглушка)</p>
+            <p>Тел.: <a class="underline" href="tel:+78005550123">+7 (800) 555-01-23</a></p>
+            <p>E-mail: <a class="underline" href="mailto:info@unishop.example">info@unishop.example</a></p>
+          </address>
+        </div>
+        <div class="flex gap-3 mt-6"><a href="#" class="bg-white/10 px-4 py-2 rounded hover:bg-grain hover:text-graphite">Telegram</a><a href="#" class="bg-white/10 px-4 py-2 rounded hover:bg-grain hover:text-graphite">WhatsApp</a><a href="#" class="bg-white/10 px-4 py-2 rounded hover:bg-grain hover:text-graphite">Max</a></div>
+      </div>
+      <form class="lead bg-gray-100 p-6 rounded space-y-3" novalidate>
+        <h2 class="font-head text-2xl text-pine">Обратная связь</h2>
+        <input required name="name" placeholder="Имя" aria-label="Имя" class="w-full p-3 rounded border">
+        <input required name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" class="w-full p-3 rounded border">
+        <input name="email" type="email" placeholder="E-mail" aria-label="E-mail" class="w-full p-3 rounded border">
+        <textarea name="msg" rows="5" placeholder="Сообщение" aria-label="Сообщение" class="w-full p-3 rounded border"></textarea>
+        <button class="bg-pine text-white font-bold px-6 py-3 rounded">Отправить</button>
+        <p class="msg text-pine text-sm" role="status"></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ПАНЕЛЬ СРАВНЕНИЯ (внизу каталога), окно с таблицей и подсказка (toast) -->
+<div id="cmpbar" class="hidden fixed bottom-0 inset-x-0 z-40 bg-graphite text-white shadow-2xl">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
+    <span class="text-sm text-white/70">Сравнение (<b id="cmp-n">0</b>/3):</span>
+    <div id="cmp-items" class="flex flex-wrap gap-2 flex-1"></div>
+    <button id="cmp-clear" class="text-sm underline hover:text-grain">Очистить</button>
+    <button id="cmp-go" class="bg-grain text-graphite font-bold px-5 py-2 rounded text-sm disabled:opacity-40" disabled>Сравнить</button>
+  </div>
+</div>
+<div id="cmpm" class="fixed inset-0 z-[55] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="cmpm-t">
+  <div id="cmpm-bg" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative bg-white w-full max-w-5xl max-h-[90vh] overflow-auto p-6 rounded shadow-2xl border-t-4 border-grain">
+    <button id="cmpm-x" type="button" aria-label="Закрыть" class="absolute top-2 right-4 text-3xl leading-none text-gray-400 hover:text-graphite">×</button>
+    <h2 id="cmpm-t" class="font-head text-2xl mb-4">Сравнение товаров</h2>
+    <div id="cmpm-body" class="overflow-x-auto"></div>
+  </div>
+</div>
+<div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-24 z-[70] bg-graphite text-white text-sm px-5 py-3 rounded shadow-lg opacity-0 pointer-events-none transition-opacity" role="status"></div>
+<!-- ВСПЛЫВАЮЩАЯ ФОРМА ЗАЯВКИ: открывается кнопками с data-open="modal" -->
+<div id="modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="m-t">
+  <div id="m-bg" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <form id="m-box" class="lead relative bg-white w-full max-w-md p-7 rounded space-y-3 shadow-2xl border-t-4 border-grain" novalidate>
+    <button type="button" id="m-x" aria-label="Закрыть" class="absolute top-2 right-4 text-3xl leading-none text-gray-400 hover:text-graphite">×</button>
+    <h2 id="m-t" class="font-head text-2xl">Оставить заявку</h2>
+    <p class="text-sm text-gray-500">Перезвоним и подберём технику под ваши задачи.</p>
+    <input required name="name" placeholder="Имя" aria-label="Имя" class="w-full p-3 rounded border">
+    <input required name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" class="w-full p-3 rounded border">
+    <textarea name="msg" rows="3" placeholder="Что вас интересует?" aria-label="Сообщение" class="w-full p-3 rounded border"></textarea>
+    <button class="w-full bg-grain text-graphite font-bold py-3 rounded hover:brightness-110">Отправить</button>
+    <p class="msg text-pine text-sm" role="status"></p>
+  </form>
+</div>
+<!-- ПОДВАЛ: контакты, соцсети, форма обратной связи, карта OpenStreetMap -->
+<footer class="bg-graphite text-white/80 mt-auto">
+  <div class="h-1.5 bg-gradient-to-r from-pine via-grain to-pine"></div>
+  <div class="max-w-7xl mx-auto px-4 py-12 grid lg:grid-cols-3 gap-10">
+    <div>
+      <p class="flex items-center gap-3 font-head text-3xl text-white"><svg width="38" height="38" viewBox="0 0 40 40" aria-hidden="true"><polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="#F2A91E"/><path d="M20 33V15" stroke="#23272B" stroke-width="2.2" stroke-linecap="round"/><g fill="#23272B"><ellipse cx="16" cy="14" rx="2.6" ry="4.4" transform="rotate(-25 16 14)"/><ellipse cx="24" cy="14" rx="2.6" ry="4.4" transform="rotate(25 24 14)"/><ellipse cx="20" cy="9" rx="2.4" ry="4.2"/><ellipse cx="15.6" cy="22" rx="2.6" ry="4.2" transform="rotate(-25 15.6 22)"/><ellipse cx="24.4" cy="22" rx="2.6" ry="4.2" transform="rotate(25 24.4 22)"/></g></svg><span>Uni<b class="text-grain font-semibold">Shop</b></span></p>
+      <p class="mt-2 text-sm">Техника из Китая, запчасти, сервис, масла и СЗР в одном месте.</p>
+      <address class="not-italic text-sm mt-4 space-y-1">
+        <p>г. Минск, ул. Пушкина, дом Колотушкина</p>
+        <p><a class="hover:text-grain" href="tel:+375290000123">+375 (29) 000-01-23</a></p>
+        <p><a class="hover:text-grain" href="mailto:info@unishop.example">mail@mail.ru</a></p>
+      </address>
+      <div class="flex flex-wrap gap-2 mt-5" aria-label="Социальные сети">
+        <a href="#" class="px-4 py-2 rounded bg-white/10 hover:bg-grain hover:text-graphite transition">Telegram</a>
+        <a href="#" class="px-4 py-2 rounded bg-white/10 hover:bg-grain hover:text-graphite transition">WhatsApp</a>
+        <a href="#" class="px-4 py-2 rounded bg-white/10 hover:bg-grain hover:text-graphite transition">VK</a>
+        <a href="#" class="px-4 py-2 rounded bg-white/10 hover:bg-grain hover:text-graphite transition">YouTube</a>
+      </div>
+    </div>
+    <form class="lead space-y-3" novalidate>
+      <h2 class="font-head text-2xl text-white">Напишите нам</h2>
+      <input required name="name" placeholder="Имя" aria-label="Имя" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white placeholder-white/50">
+      <input required name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white placeholder-white/50">
+      <textarea name="msg" rows="3" placeholder="Сообщение" aria-label="Сообщение" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white placeholder-white/50"></textarea>
+      <button class="w-full bg-grain text-graphite font-bold py-3 rounded hover:brightness-110">Отправить</button>
+      <p class="msg text-grain text-sm" role="status"></p>
+    </form>
+    <div>
+      <h2 class="font-head text-2xl text-white mb-3">Офис на карте</h2>
+      <iframe class="map-dark w-full h-64 rounded border-0" loading="lazy" title="Карта офиса UniShop" src="https://maps.google.com/maps?q=53.955299,27.764662&z=16&output=embed"
+  width="100%"height="450"style="border:0;"allowfullscreen=""loading="lazy"referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+  <div class="border-t border-white/10 text-center text-sm py-4">© 2026 UniShop. Каждая деталь работает на урожай.</div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
