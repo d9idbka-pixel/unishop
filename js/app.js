@@ -1,5 +1,9 @@
 /* Страница всегда открывается сверху (с заставкой), без автопрокрутки браузера */
 if('scrollRestoration' in history)history.scrollRestoration='manual';
+/* Адрес вида #catalog совпадал с id секций, и браузер при загрузке прокручивал страницу к секции (вниз от заставки),
+   а затем скрипт возвращал её наверх. Теперь адреса страниц имеют вид #/catalog, а старый вид убираем до загрузки. */
+const START=location.hash.replace(/^#\/?/,'');
+if(START)history.replaceState(null,'',location.pathname+location.search);
 /* ==========================================================
    ИЗОБРАЖЕНИЯ
    Все фото лежат в папке images/. Ключ — идентификатор Unsplash,
@@ -150,7 +154,7 @@ const link=(id,l,cls)=>`<button data-go="${id}" class="nav-link ${cls}">${l}</bu
 $('#nav-desktop').innerHTML=pages.map(([i,l])=>link(i,l,'py-2 border-b-2 border-transparent font-semibold hover:text-grain')).join('');
 $('#nav-mobile').innerHTML=pages.map(([i,l])=>link(i,l,'text-left py-3 border-b border-white/10 font-semibold')).join('');
 // swap: мгновенное переключение активной страницы
-function swap(id){
+function swap(id,first){
   if(!pages.some(p=>p[0]===id))id='home';
   $$('.page').forEach(p=>p.classList.toggle('active',p.id===id));
   $$('.nav-link').forEach(b=>b.classList.toggle('on',b.dataset.go===id));
@@ -163,13 +167,13 @@ function swap(id){
   if(id==='home')count();
   $('#nav-mobile').classList.add('hidden');$('#nav-mobile').classList.remove('flex');
   $('#burger').setAttribute('aria-expanded','false');
-  history.replaceState(null,'','#'+id);window.scrollTo({top:0,behavior:'smooth'});
+  history.replaceState(null,'','#/'+id);window.scrollTo({top:0,behavior:first?'instant':'smooth'});
 }
 // go: плавный переход (затухание 230 мс → swap → появление)
 function go(id,first){
   const cur=$('.page.active');
   window.scrollTo({top:0,behavior:'smooth'});
-  if(first||!cur||cur.id===id){swap(id);return}
+  if(first||!cur||cur.id===id){swap(id,first);return}
   cur.classList.add('out');
   setTimeout(()=>{cur.classList.remove('out');swap(id)},230);
 }
@@ -345,6 +349,6 @@ function closeM(){modal.classList.add('hidden');modal.classList.remove('flex','o
 document.addEventListener('click',e=>{if(e.target.closest('[data-open]'))openM();else if(e.target.id==='m-bg'||e.target.closest('#m-x'))closeM()});
 addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 $('#m-box').addEventListener('lead:sent',()=>setTimeout(closeM,1800));   // окно закрывается после успешной отправки
-go(location.hash.slice(1)||'home',true);
+go(START||'home',true);
 const toTop=()=>window.scrollTo({top:0,behavior:'instant'});
 toTop();addEventListener('load',toTop);addEventListener('pageshow',toTop);
