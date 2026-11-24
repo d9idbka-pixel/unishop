@@ -13,8 +13,8 @@ if(START)history.replaceState(null,'',location.pathname+location.search);
    работает в любом случае.
    ========================================================== */
 const IMG={
-  'tile-garden':'images/tile-garden.svg',   // плитка «Садоводство» (замените на своё фото при желании)
-  'tile-forest':'images/tile-forest.svg',   // плитка «Лесное хозяйство»
+  'tile-garden':'images/tile-garden.jpg',   // плитка «Садоводство» (замените на своё фото при желании)
+  'tile-forest':'images/tile-forest.jpg',   // плитка «Лесное хозяйство»
   'karson-240':'images/karson-240.jpg',   // трактор Weifang Karson, 240 л.с. (поз. 10.1) — первый слайд заставки
   'photo-1530267981375-f0de937f5f13':'images/tractor-1.jpg',
   'photo-1592982537447-7440770cbfc9':'images/tractor-2.jpg',
@@ -80,7 +80,19 @@ const CAT={
 };
 
 // Короткая фабрика товара: категория, название, картинка, строки характеристик, атрибуты для фильтров
-const P=(c,n,i,s,a)=>({c,n,i,s,a});
+/* P(...) — товар прежнего каталога. Баннерные картинки в карточках не используются (i всегда null):
+   показывается значок категории и «Фото по запросу». Чтобы добавить фото товара, положите файл
+   images/products/p-<категория>-<порядковый номер>.jpg (например p-tractors-1.jpg, p-oils-3.jpg). */
+const _n={};
+const P=(c,n,i,s,a)=>({c,n,i:null,s,a,no:c+'-'+(_n[c]=(_n[c]||0)+1)});
+/* Значки категорий для карточек без фото (SVG, цвет задаёт text-pine) */
+const _svg=p=>`<svg viewBox="0 0 64 64" class="w-14 h-14 text-pine/70" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const _tractor=_svg('<circle cx="20" cy="42" r="12"/><circle cx="50" cy="48" r="6"/><path d="M32 42h12M44 48V30h8l4 10M30 30V14h14v16H30M8 30h22"/>');
+const ICON={tractors:_tractor,agri:_tractor,garden:_tractor,forest:_tractor,
+  combines:_svg('<circle cx="22" cy="48" r="8"/><circle cx="48" cy="50" r="6"/><path d="M6 34h36v10M42 24h14v22M14 34V20h20v14M2 44l6-10"/>'),
+  oils:_svg('<path d="M32 8C32 8 16 28 16 40a16 16 0 0 0 32 0C48 28 32 8 32 8z"/>'),
+  szr:_svg('<path d="M32 56V28M32 40C20 40 12 32 12 20c12 0 20 8 20 20M32 34c0-12 8-20 20-20 0 12-8 20-20 20"/>'),
+  parts:_svg('<circle cx="32" cy="32" r="9"/><path d="M32 6v8M32 50v8M6 32h8M50 32h8M13.6 13.6l5.7 5.7M44.7 44.7l5.7 5.7M13.6 50.4l5.7-5.7M44.7 19.3l5.7-5.7"/>')};
 /* inCat(товар, категория): товар может входить в несколько блоков (поле bl). Q(...) — позиция из таблицы техники.
    Q(блоки, название, строки описания, атрибуты фильтров, доп. поля). Доп. поля: logo — логотип завода вместо фото,
    i — ключ фото из IMG, url — ссылка на страницу товара у завода (на сайте не показывается, см. SHOW_SOURCE). */
@@ -184,7 +196,9 @@ $('#burger').onclick=function(){const m=$('#nav-mobile'),o=m.classList.toggle('h
 /* Плитки на главной: те же категории, что и в каталоге (TILES), плюс «Сервис и ремонт» */
 function paintCats(){$('#cats').innerHTML=[...TILES.map(k=>[CAT[k].t,CAT[k].i,k]),['Сервис и ремонт','photo-1592982537447-7440770cbfc9','service']].map(([n,i,k])=>`<button ${k==='service'?'data-go="service"':`data-go="catalog" data-c="${k}"`} class="group text-left flex flex-col justify-start"><span class="block overflow-hidden"><img src="${U(i)}" alt="${n}" loading="lazy" class="h-52 w-full object-cover group-hover:scale-105 transition duration-500"></span><b class="block mt-3 text-lg font-semibold">${n}</b><span class="block text-grain text-sm font-semibold mt-1">Подробнее</span></button>`).join('')}
 paintCats();
-$('#partners').innerHTML=partners.map(([n,d])=>`<article class="p-5 border rounded hover:border-grain hover:shadow-md transition"><h3 class="font-head text-xl text-pine">${n}</h3><p class="text-gray-600 mt-1">${d}</p></article>`).join('');
+/* Логотипы партнёров: положите файл images/partners/<имя>.png (имена — в PSLUG). Пока файла нет, показывается название. */
+const PSLUG={'YTO Group':'yto','Weichai Lovol':'lovol','Zoomlion':'zoomlion','Dongfeng':'dongfeng','Changfa':'changfa','Shifeng':'shifeng','ADAMA':'adama','Syngenta':'syngenta','Wynca':'wynca'};
+$('#partners').innerHTML=partners.map(([n,d])=>`<article class="p-5 border rounded hover:border-grain hover:shadow-md transition"><div class="relative h-20 mb-3 flex items-center justify-center bg-gray-50"><span class="font-head text-2xl tracking-wide text-graphite/70" style="font-weight:600">${n.toUpperCase()}</span><img src="images/partners/${PSLUG[n]}.png" alt="Логотип ${n}" loading="lazy" data-ph class="absolute inset-0 w-full h-full object-contain bg-white p-2"></div><h3 class="font-head text-xl text-pine">${n}</h3><p class="text-gray-600 mt-1">${d}</p></article>`).join('');
 
 /* ==========================================================
    КАТАЛОГ
@@ -198,7 +212,7 @@ $('#partners').innerHTML=partners.map(([n,d])=>`<article class="p-5 border round
 const cmp=new Set();let st={cat:null,f:{},n:6};
 const uniq=k=>[...new Set(products.filter(p=>inCat(p,st.cat)).flatMap(p=>[].concat(p.a[k])).filter(v=>v&&v!=='all'))];
 const match=p=>CAT[st.cat].f.every(f=>{const sel=st.f[f.k];if(!sel||!sel.size)return true;const v=p.a[f.k];return v==='all'||[].concat(v).some(x=>sel.has(x))});
-const card=p=>`<article class="border rounded overflow-hidden flex flex-col bg-white">${p.i?`<img src="${U(p.i)}" alt="${p.n}" loading="lazy" class="h-44 w-full object-cover">`:`<div class="relative h-44 bg-gray-100 flex flex-col items-center justify-center gap-2 p-4">${p.logo?`<img src="${p.logo}" alt="Логотип завода" loading="lazy" class="max-h-20 max-w-[70%] object-contain">`:`<span class="text-5xl">🚜</span>`}<span class="text-xs text-gray-400">Фото по запросу</span>${p.no?`<img src="images/products/p-${p.no.replace('.','-')}.jpg" alt="${p.n}" loading="lazy" data-ph class="absolute inset-0 w-full h-full object-contain bg-white">`:''}</div>`}<div class="p-4 flex flex-col flex-1"><span class="self-start text-xs font-bold bg-grain/20 text-pine px-2 py-1 rounded">${CAT[p.c].tag}</span><h3 class="font-bold text-lg mt-2">${p.n}</h3><ul class="text-sm text-gray-600 mt-2 space-y-1 flex-1">${p.s.map(x=>`<li>• ${x}</li>`).join('')}</ul>${SHOW_SOURCE&&p.url?`<a href="${p.url}" target="_blank" rel="noopener" class="text-sm underline text-pine mt-2">Страница товара ↗</a>`:''}<p class="font-head text-xl text-pine mt-3">По запросу</p><div class="flex gap-2 mt-3"><button data-open="modal" class="flex-1 bg-pine text-white text-sm font-bold py-2 rounded">Оставить заявку</button><button data-cmp="${p.n}" aria-pressed="${cmp.has(p.n)}" class="border border-pine text-pine text-sm px-3 py-2 rounded ${cmp.has(p.n)?'bg-grain':''}">Сравнить</button></div></div></article>`;
+const card=p=>`<article class="border rounded overflow-hidden flex flex-col bg-white">${p.i?`<img src="${U(p.i)}" alt="${p.n}" loading="lazy" class="h-44 w-full object-cover">`:`<div class="relative h-44 bg-gray-100 flex flex-col items-center justify-center gap-2 p-4">${p.logo?`<img src="${p.logo}" alt="Логотип завода" loading="lazy" class="max-h-20 max-w-[70%] object-contain">`:`${ICON[p.c]||ICON.tractors}`}<span class="text-xs text-gray-400">Фото по запросу</span>${p.no?`<img src="images/products/p-${p.no.replace('.','-')}.jpg" alt="${p.n}" loading="lazy" data-ph class="absolute inset-0 w-full h-full object-contain bg-white">`:''}</div>`}<div class="p-4 flex flex-col flex-1"><span class="self-start text-xs font-bold bg-grain/20 text-pine px-2 py-1 rounded">${CAT[p.c].tag}</span><h3 class="font-bold text-lg mt-2">${p.n}</h3><ul class="text-sm text-gray-600 mt-2 space-y-1 flex-1">${p.s.map(x=>`<li>• ${x}</li>`).join('')}</ul>${SHOW_SOURCE&&p.url?`<a href="${p.url}" target="_blank" rel="noopener" class="text-sm underline text-pine mt-2">Страница товара ↗</a>`:''}<p class="font-head text-xl text-pine mt-3">По запросу</p><div class="flex gap-2 mt-3"><button data-open="modal" class="flex-1 bg-pine text-white text-sm font-bold py-2 rounded">Оставить заявку</button><button data-cmp="${p.n}" aria-pressed="${cmp.has(p.n)}" class="border border-pine text-pine text-sm px-3 py-2 rounded ${cmp.has(p.n)?'bg-grain':''}">Сравнить</button></div></div></article>`;
 function paintTiles(){$('#cat-tiles').innerHTML=TILES.map(k=>`<button data-c="${k}" class="group text-left flex flex-col justify-start"><span class="block overflow-hidden">${CAT[k].i?`<img src="${U(CAT[k].i)}" alt="${CAT[k].t}" loading="lazy" class="h-52 w-full object-cover group-hover:scale-105 transition duration-500">`:`<span class="flex h-52 items-center justify-center bg-gradient-to-br from-pine to-pine2 text-7xl group-hover:scale-105 transition duration-500">${CAT[k].e}</span>`}</span><b class="block mt-3 text-lg font-semibold">${CAT[k].t}</b><span class="block text-sm text-gray-500">${CAT[k].d}</span><span class="block text-grain text-sm font-semibold mt-1">Выбрать${k==='parts'?'':' · '+products.filter(p=>inCat(p,k)).length+' поз.'}</span></button>`).join('');}
 paintTiles();
 // buildF: рисует панель фильтров выбранной категории
@@ -315,7 +329,7 @@ function cmpTable(){
   const th='class="text-left align-top p-3 bg-gray-100 font-semibold w-40 border-b"',td='class="align-top p-3 border-b"';
   const row=(l,f)=>`<tr><th ${th}>${l}</th>${ps.map(p=>`<td ${td}>${f(p)}</td>`).join('')}</tr>`;
   $('#cmpm-body').innerHTML='<table class="w-full text-sm min-w-[560px]"><tbody>'
-   +row('',p=>`${p.i?`<img src="${U(p.i)}" alt="" class="h-28 w-full object-cover mb-2">`:`<div class="relative h-28 mb-2 bg-gray-100 flex items-center justify-center">${p.logo?`<img src="${p.logo}" alt="" class="max-h-16 max-w-[70%] object-contain">`:'🚜'}${p.no?`<img src="images/products/p-${p.no.replace('.','-')}.jpg" alt="" data-ph class="absolute inset-0 w-full h-full object-contain bg-white">`:''}</div>`}<b>${p.n}</b><br><button data-rm="${p.n}" class="text-xs underline text-gray-500">Убрать</button>`)
+   +row('',p=>`${p.i?`<img src="${U(p.i)}" alt="" class="h-28 w-full object-cover mb-2">`:`<div class="relative h-28 mb-2 bg-gray-100 flex items-center justify-center">${p.logo?`<img src="${p.logo}" alt="" class="max-h-16 max-w-[70%] object-contain">`:(ICON[p.c]||ICON.tractors)}${p.no?`<img src="images/products/p-${p.no.replace('.','-')}.jpg" alt="" data-ph class="absolute inset-0 w-full h-full object-contain bg-white">`:''}</div>`}<b>${p.n}</b><br><button data-rm="${p.n}" class="text-xs underline text-gray-500">Убрать</button>`)
    +row('Категория',p=>CAT[p.c].tag)
    +labels.map(f=>row(f.l,p=>val(p,f))).join('')
    +row('Характеристики',p=>`<ul class="space-y-1">${p.s.map(x=>`<li>• ${x}</li>`).join('')}</ul>`)
